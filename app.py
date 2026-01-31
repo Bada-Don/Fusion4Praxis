@@ -108,7 +108,21 @@ st.markdown("### Optimize Price & Visibility to Maximize Revenue")
 st.sidebar.header("Scenario Settings")
 
 # Pick a product to simulate
-product_idx = st.sidebar.selectbox("Select Product Index", options=[10, 50, 100, 200, 500, 1000])
+st.sidebar.subheader("Product Selection")
+selection_method = st.sidebar.radio("Choose method:", ["Quick Select", "Custom Index"])
+
+if selection_method == "Quick Select":
+    product_idx = st.sidebar.selectbox("Select Product Index", options=[10, 50, 100, 200, 500, 1000])
+else:
+    max_index = len(df) - 1
+    product_idx = st.sidebar.number_input(
+        f"Enter Product Index (0 to {max_index})", 
+        min_value=0, 
+        max_value=max_index, 
+        value=10,
+        step=1
+    )
+
 selected_product = df.iloc[product_idx]
 st.sidebar.write(f"**Product:** {selected_product['product_name'][:50]}...")
 st.sidebar.write(f"**Category:** {selected_product['main_category']}")
@@ -219,14 +233,17 @@ st.subheader("💡 Key Insights")
 optimal_price_idx = np.argmax(revenues)
 optimal_price = prices[optimal_price_idx]
 optimal_revenue = revenues[optimal_price_idx]
+optimal_demand = demands[optimal_price_idx]
 
-col_i1, col_i2, col_i3 = st.columns(3)
+col_i1, col_i2, col_i3, col_i4 = st.columns(4)
 with col_i1:
-    st.metric("Optimal Price Point", f"₹{optimal_price:.0f}")
+    st.metric("Optimal Price Point", f"₹{optimal_price:.0f}", help="Price that maximizes revenue")
 with col_i2:
-    st.metric("Baseline Sales", f"{int(baseline_demand)}", help="Current sales volume")
+    st.metric("Baseline Sales", f"{int(baseline_demand)}", help="Current sales volume at current price")
 with col_i3:
-    st.metric("Max Potential Revenue", f"₹{optimal_revenue:,.0f}")
+    st.metric("Sales at Optimal Price", f"{int(optimal_demand)}", f"{int(optimal_demand - baseline_demand):+.0f} units", help="Predicted sales if price is changed to optimal")
+with col_i4:
+    st.metric("Max Potential Revenue", f"₹{optimal_revenue:,.0f}", help=f"Revenue at optimal price: ₹{optimal_price:.0f} × {int(optimal_demand)} units")
 
 st.markdown("---")
 st.caption("Built with XGBoost | Data-driven pricing optimization for Amazon products")
