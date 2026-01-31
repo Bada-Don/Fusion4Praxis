@@ -224,10 +224,9 @@ col_i1, col_i2, col_i3 = st.columns(3)
 with col_i1:
     st.metric("Optimal Price Point", f"₹{optimal_price:.0f}")
 with col_i2:
-    st.metric("Max Potential Revenue", f"₹{optimal_revenue:,.0f}")
+    st.metric("Baseline Sales", f"{int(baseline_demand)}", help="Current sales volume")
 with col_i3:
-    price_elasticity = (predicted_demand - baseline_demand) / baseline_demand / (price_delta / 100) if price_delta != 0 else 0
-    st.metric("Price Elasticity", f"{price_elasticity:.2f}")
+    st.metric("Max Potential Revenue", f"₹{optimal_revenue:,.0f}")
 
 st.markdown("---")
 st.caption("Built with XGBoost | Data-driven pricing optimization for Amazon products")
