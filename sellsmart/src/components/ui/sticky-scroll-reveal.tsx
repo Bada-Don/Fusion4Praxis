@@ -1,7 +1,6 @@
 "use client";
 import React, { useRef } from "react";
-import { useMotionValueEvent, useScroll } from "framer-motion";
-import { motion } from "framer-motion";
+import { useScroll, useTransform, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export const StickyScroll = ({
@@ -11,7 +10,7 @@ export const StickyScroll = ({
     content: {
         title: string;
         description: string;
-        content?: React.ReactNode | any;
+        content?: React.ReactNode;
     }[];
     contentClassName?: string;
 }) => {
@@ -24,38 +23,15 @@ export const StickyScroll = ({
     });
     const cardLength = content.length;
 
-    useMotionValueEvent(scrollYProgress, "change", (latest) => {
-        const cardsBreakpoints = content.map((_, index) => index / cardLength);
-        const closestBreakpointIndex = cardsBreakpoints.reduce(
-            (acc, breakpoint, index) => {
-                const distance = Math.abs(latest - breakpoint);
-                if (distance < Math.abs(latest - cardsBreakpoints[acc])) {
-                    return index;
-                }
-                return acc;
-            },
-            0
-        );
-        setActiveCard(closestBreakpointIndex);
-    });
-
-    const backgroundColors = [
-        "var(--slate-900)",
-        "var(--black)",
-        "var(--neutral-900)",
-    ];
-    const linearGradients = [
-        "linear-gradient(to bottom right, var(--cyan-500), var(--emerald-500))",
-        "linear-gradient(to bottom right, var(--pink-500), var(--indigo-500))",
-        "linear-gradient(to bottom right, var(--orange-500), var(--yellow-500))",
-    ];
+    useTransform(
+        scrollYProgress,
+        [0, 1],
+        [0, cardLength * 100] // not mapped directly, just for triggers
+    );
 
     return (
         <motion.div
-            animate={{
-                backgroundColor: backgroundColors[activeCard % backgroundColors.length],
-            }}
-            className="h-[30rem] overflow-y-auto flex justify-center relative space-x-10 rounded-md p-10"
+            className="h-[30rem] overflow-y-auto flex justify-center relative space-x-10 rounded-md p-10 scrollbar-hide"
             ref={ref}
         >
             <div className="div relative flex items-start px-4">
@@ -90,9 +66,6 @@ export const StickyScroll = ({
                 </div>
             </div>
             <motion.div
-                animate={{
-                    background: linearGradients[activeCard % linearGradients.length],
-                }}
                 className={cn(
                     "hidden lg:block h-60 w-80 rounded-md bg-white sticky top-10 overflow-hidden",
                     contentClassName
