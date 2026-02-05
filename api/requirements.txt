@@ -1,3 +1,9 @@
 fastapi
 uvicorn
 pydantic
+xgboost
+pandas
+scikit-learn
+textblob
+joblib
+statsmodels
