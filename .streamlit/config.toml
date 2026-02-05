@@ -1,0 +1,6 @@
+[theme]
+base="dark"
+primaryColor="#00ff9d"  # Neon green to match your site
+backgroundColor="#020617" # Dark Slate (Matches Next.js default)
+secondaryBackgroundColor="#0f172a"
+textColor="#ffffff"

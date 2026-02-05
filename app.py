@@ -7,6 +7,56 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from textblob import TextBlob
 
+# --- UI Setup ---
+st.set_page_config(layout="wide", page_title="Pricing Simulator")
+plt.style.use('dark_background')
+
+# --- Custom CSS for Dark Theme & Iframe Support ---
+st.markdown("""
+    <style>
+        /* Remove default Streamlit header, footer, and menu */
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        header {visibility: hidden;}
+        
+        /* Background - Match Next.js Dark Theme (#020617) */
+        .stApp {
+            background-color: #020617;
+        }
+        
+        /* Metric Cards Styling */
+        div[data-testid="stMetric"] {
+            background-color: #1e293b; /* Slate-800 */
+            border: 1px solid #334155; /* Slate-700 */
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        div[data-testid="stMetricLabel"] {
+            color: #94a3b8 !important; /* Slate-400 */
+            font-size: 0.85rem !important;
+        }
+        
+        div[data-testid="stMetricValue"] {
+            color: #f8fafc !important; /* Slate-50 */
+        }
+
+        /* Sidebar Styling */
+        section[data-testid="stSidebar"] {
+            background-color: #0f172a; /* Slate-900 */
+            border-right: 1px solid #1e293b;
+        }
+        
+        h1, h2, h3 {
+            color: #f8fafc !important;
+        }
+        
+        p, span, label {
+            color: #cbd5e1 !important; /* Slate-300 */
+        }
+    </style>
+""", unsafe_allow_html=True)
 # --- Phase 1: Data Loading and Feature Engineering ---
 @st.cache_data
 def load_and_prepare_data():
@@ -220,29 +270,43 @@ for p in prices:
     revenues.append(p * demand)
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
+fig.patch.set_alpha(0.0) # Transparent figure background
+
+# Helper to style axes
+def style_ax(ax, title, xlabel, ylabel):
+    ax.set_facecolor('#0f172a') # Dark inner background (optional, or transparent)
+    ax.patch.set_alpha(0.0)      # Make inner plot transparent
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_color('#94a3b8')
+    ax.spines['left'].set_color('#94a3b8')
+    ax.tick_params(axis='x', colors='#cbd5e1')
+    ax.tick_params(axis='y', colors='#cbd5e1')
+    ax.yaxis.label.set_color('#e2e8f0')
+    ax.xaxis.label.set_color('#e2e8f0')
+    ax.title.set_color('#f8fafc')
+    ax.set_title(title, fontsize=12, fontweight='bold')
+    ax.set_xlabel(xlabel, fontsize=10)
+    ax.set_ylabel(ylabel, fontsize=10)
+    ax.grid(alpha=0.1, color='#cbd5e1', linestyle='--')
+    return ax
 
 # Demand Curve
-ax1.plot(prices, demands, color='green', linewidth=2)
-ax1.axvline(new_price, color='red', linestyle='--', label='Selected Price', linewidth=2)
-ax1.axvline(current_price, color='blue', linestyle='--', label='Current Price', linewidth=2)
-ax1.set_xlabel("Price (₹)", fontsize=11)
-ax1.set_ylabel("Predicted Sales Volume", fontsize=11)
-ax1.set_title("Price vs. Demand", fontsize=12, fontweight='bold')
-ax1.legend()
-ax1.grid(alpha=0.3)
+ax1 = style_ax(ax1, "Price vs. Demand", "Price (₹)", "Predicted Sales Volume")
+ax1.plot(prices, demands, color='#22c55e', linewidth=2.5) # Green
+ax1.axvline(new_price, color='#ef4444', linestyle='--', label='Selected Price', linewidth=1.5) # Red
+ax1.axvline(current_price, color='#3b82f6', linestyle='--', label='Current Price', linewidth=1.5) # Blue
+ax1.legend(facecolor='#1e293b', edgecolor='#334155', labelcolor='#cbd5e1')
 
 # Revenue Curve
-ax2.plot(prices, revenues, color='purple', linewidth=2)
-ax2.axvline(new_price, color='red', linestyle='--', label='Selected Price', linewidth=2)
-ax2.axvline(current_price, color='blue', linestyle='--', label='Current Price', linewidth=2)
-ax2.set_xlabel("Price (₹)", fontsize=11)
-ax2.set_ylabel("Projected Revenue (₹)", fontsize=11)
-ax2.set_title("Price vs. Revenue", fontsize=12, fontweight='bold')
-ax2.legend()
-ax2.grid(alpha=0.3)
+ax2 = style_ax(ax2, "Price vs. Revenue", "Price (₹)", "Projected Revenue (₹)")
+ax2.plot(prices, revenues, color='#a855f7', linewidth=2.5) # Purple
+ax2.axvline(new_price, color='#ef4444', linestyle='--', label='Selected Price', linewidth=1.5)
+ax2.axvline(current_price, color='#3b82f6', linestyle='--', label='Current Price', linewidth=1.5)
+ax2.legend(facecolor='#1e293b', edgecolor='#334155', labelcolor='#cbd5e1')
 
 plt.tight_layout()
-st.pyplot(fig)
+st.pyplot(fig, transparent=True)
 
 # Key Insights
 st.subheader("💡 Key Insights")
