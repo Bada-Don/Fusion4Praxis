@@ -1,8 +1,0 @@
-Metric,Count,Percentage
-Total Products,1465,100.0
-Products with Discount > 100%,0,0.0
-Products with Negative Prices,0,0.0
-Discount Calculation Errors,0,0.0
-Missing Discounted Price,0,0.0
-Missing Ratings,1,0.06825938566552901
-Duplicate Product IDs,114,7.781569965870307

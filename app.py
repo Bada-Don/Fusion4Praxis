@@ -11,7 +11,7 @@ from textblob import TextBlob
 @st.cache_data
 def load_and_prepare_data():
     # Load data
-    df = pd.read_csv("data/raw/Pricing_dataset.csv")
+    df = pd.read_csv("data/Pricing_dataset.csv")
     
     # Cleaning Money Columns
     def clean_currency(x):
@@ -57,14 +57,13 @@ def load_and_prepare_data():
     
     return df
 
-# --- Phase 2: Model Training ---
+# --- Phase 2: Model Training (UPDATED WITH CONSTRAINTS) ---
 @st.cache_resource
 def train_model(_df):
     # Encode Categoricals
     le = LabelEncoder()
     _df['main_category_encoded'] = le.fit_transform(_df['main_category'])
     
-    # Select Features
     features = [
         'discounted_price', 
         'actual_price', 
@@ -82,12 +81,29 @@ def train_model(_df):
     # Train/Test Split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
-    # XGBoost Regressor
+    # --- HERE IS THE MAGIC FIX ---
+    # 1 = Increasing constraint (As feature goes up, prediction goes up)
+    # -1 = Decreasing constraint (As feature goes up, prediction goes down)
+    # 0 = No constraint
+    
+    # Map constraints to the feature list order:
+    # 'discounted_price': -1 (Price UP -> Demand DOWN)
+    # 'actual_price': 0 (Neutral)
+    # 'discount_percentage': 1 (Discount UP -> Demand UP)
+    # 'rating': 1 (Rating UP -> Demand UP)
+    # 'desc_len': 1 (Better Description -> Demand UP)
+    # 'price_competitiveness': -1 (More Expensive vs Peers -> Demand DOWN)
+    # 'review_sentiment': 1 (Better Sentiment -> Demand UP)
+    # 'main_category_encoded': 0 (Neutral)
+    
+    constraints = "(-1, 0, 1, 1, 1, -1, 1, 0)"
+    
     model = xgb.XGBRegressor(
         objective='reg:squarederror', 
         n_estimators=500, 
         learning_rate=0.05, 
-        max_depth=6
+        max_depth=6,
+        monotone_constraints=constraints  # <--- FORCING ECONOMIC LOGIC
     )
     
     model.fit(X_train, y_train)
