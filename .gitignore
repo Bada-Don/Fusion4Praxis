@@ -2,4 +2,3 @@ venv/
 *.pkl
 __pycache__/
 .env
-jarvislanding-main/
