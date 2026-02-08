@@ -1,4 +1,4 @@
-# 🛒 Dynamic Pricing & Demand Simulator
+# 🛒 Praxis - Dynamic Pricing & Demand Simulator
 
 An interactive Streamlit application that uses machine learning to optimize pricing strategies and predict demand for Amazon products. Built with XGBoost to capture non-linear price elasticity and demand patterns.
 
@@ -6,7 +6,7 @@ An interactive Streamlit application that uses machine learning to optimize pric
 
 ## 🎯 What Does This Do?
 
-This tool helps answer the critical business question: **"If I change the price or improve product visibility, how will it affect sales and revenue?"**
+Praxis helps answer the critical business question: **"If I change the price or improve product visibility, how will it affect sales and revenue?"**
 
 The simulator:
 - Predicts demand (sales volume) based on price, visibility, and product features

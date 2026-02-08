@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Praxis - AI-Powered Pricing Optimization
+
+This is the Next.js frontend for Praxis, an AI pricing engine with enforced Economic Guardrails.
 
 ## Getting Started
 

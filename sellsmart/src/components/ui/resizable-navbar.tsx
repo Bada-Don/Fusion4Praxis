@@ -235,7 +235,7 @@ export const NavbarLogo = () => {
             className="relative z-20 mr-4 flex items-center gap-2 px-2 py-1 text-sm font-normal text-white"
         >
             <IconTrendingUp className="text-white h-7 w-7" />
-            <span className="text-2xl font-black tracking-tight text-white font-[family-name:var(--font-orbitron)]">SELLSMART</span>
+            <span className="text-2xl font-black tracking-tight text-white font-[family-name:var(--font-orbitron)]">PRAXIS</span>
         </a>
     );
 };

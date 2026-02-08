@@ -58,7 +58,7 @@ function AboutSection() {
       {/* Text Reveal Animation */}
       <div className="relative z-10 container mx-auto px-6 md:px-8">
         <TextReveal>
-          SellSmart bridges the gap between data science and retail strategy.
+          Praxis bridges the gap between data science and retail strategy.
           Our constrained XGBoost engine prevents "economic hallucinations"
           by enforcing logical pricing rules, ensuring every recommendation
           is profitable and realistic.
