@@ -39,6 +39,7 @@ export function Highlighter({
 }: HighlighterProps) {
     const elementRef = useRef<HTMLSpanElement>(null)
     const annotationRef = useRef<RoughAnnotation | null>(null)
+    const hasAnimatedRef = useRef(false)
 
     const isInView = useInView(elementRef, {
         once: true,
@@ -50,6 +51,7 @@ export function Highlighter({
 
     useEffect(() => {
         if (!shouldShow) return
+        if (hasAnimatedRef.current) return // Already animated, don't re-animate
 
         const element = elementRef.current
         if (!element) return
@@ -68,19 +70,11 @@ export function Highlighter({
 
         annotationRef.current = annotation
         annotationRef.current.show()
-
-        const resizeObserver = new ResizeObserver(() => {
-            annotation.hide()
-            annotation.show()
-        })
-
-        resizeObserver.observe(element)
-        resizeObserver.observe(document.body)
+        hasAnimatedRef.current = true
 
         return () => {
-            if (element) {
-                annotate(element, { type: action }).remove()
-                resizeObserver.disconnect()
+            if (element && annotationRef.current) {
+                annotationRef.current.remove()
             }
         }
     }, [

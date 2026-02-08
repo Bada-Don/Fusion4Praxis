@@ -2,6 +2,7 @@
 
 import { ChevronRight, Download } from "lucide-react"
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient"
+import { SmokeEffect } from "@/components/ui/smoke-card"
 import type { ReactNode } from "react"
 
 interface HeroProps {
@@ -37,46 +38,52 @@ export function Hero({
                 className="absolute left-1/2 top-[calc(100%-90px)] lg:top-[calc(100%-150px)] h-[500px] w-[700px] md:h-[500px] md:w-[1100px] lg:h-[750px] lg:w-[140%] -translate-x-1/2 rounded-[100%] border-[#B48CDE] bg-black bg-[radial-gradient(closest-side,#000_82%,#ffffff)] animate-fade-up"
             />
 
-            {/* Eyebrow */}
-            {eyebrow && (
-                <a href="#" className="group">
-                    <span
-                        className="text-sm text-gray-400 font-geist mx-auto px-5 py-2 bg-gradient-to-tr from-zinc-300/5 via-gray-400/5 to-transparent border-[2px] border-white/5 rounded-3xl w-fit tracking-tight uppercase flex items-center justify-center"
-                    >
-                        {eyebrow}
-                        <ChevronRight className="inline w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
-                    </span>
-                </a>
-            )}
+            {/* Hero Content - positioned above backgrounds, pointer-events pass through to smoke */}
+            <div className="relative z-20 pointer-events-none">
+                {/* Eyebrow */}
+                {eyebrow && (
+                    <a href="#" className="group inline-block pointer-events-auto">
+                        <span
+                            className="text-sm text-gray-400 font-geist mx-auto px-5 py-2 bg-gradient-to-tr from-zinc-300/5 via-gray-400/5 to-transparent border-[2px] border-white/5 rounded-3xl w-fit tracking-tight uppercase flex items-center justify-center"
+                        >
+                            {eyebrow}
+                            <ChevronRight className="inline w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+                        </span>
+                    </a>
+                )}
 
-            {/* Title */}
-            <h1
-                className="animate-fade-in -translate-y-4 text-balance py-6 text-5xl font-semibold leading-none tracking-tighter text-white opacity-0 sm:text-6xl md:text-7xl lg:text-8xl [animation-fill-mode:forwards]"
-            >
-                {title}
-            </h1>
+                {/* Title */}
+                <h1
+                    className="text-balance py-6 text-5xl font-semibold leading-none tracking-tighter text-white sm:text-6xl md:text-7xl lg:text-8xl"
+                >
+                    {title}
+                </h1>
 
-            {/* Subtitle */}
-            <p
-                className="animate-fade-in mb-6 -translate-y-4 text-balance text-lg tracking-tight text-gray-400 opacity-0 md:text-xl"
-            >
-                {subtitle}
-            </p>
+                {/* Subtitle */}
+                <p
+                    className="mb-6 text-balance text-lg tracking-tight text-gray-400 md:text-xl max-w-2xl mx-auto"
+                >
+                    {subtitle}
+                </p>
 
-            {/* CTA */}
-            {ctaLabel && (
-                <div className="flex justify-center">
-                    <HoverBorderGradient
-                        containerClassName="rounded-full"
-                        as="button"
-                        className="bg-black text-white flex items-center space-x-3 px-8 py-4 text-lg cursor-pointer"
-                        onClick={onCtaClick}
-                    >
-                        <Download className="h-5 w-5" />
-                        <span>{ctaLabel}</span>
-                    </HoverBorderGradient>
-                </div>
-            )}
+                {/* CTA */}
+                {ctaLabel && (
+                    <div className="flex justify-center pointer-events-auto">
+                        <HoverBorderGradient
+                            containerClassName="rounded-full"
+                            as="button"
+                            className="bg-black text-white flex items-center space-x-3 px-8 py-4 text-lg cursor-pointer"
+                            onClick={onCtaClick}
+                        >
+                            <Download className="h-5 w-5" />
+                            <span>{ctaLabel}</span>
+                        </HoverBorderGradient>
+                    </div>
+                )}
+            </div>
+
+            {/* Smoke Effect - follows mouse cursor - TOP LAYER */}
+            <SmokeEffect className="z-30" />
 
             {/* Bottom Fade */}
             <div

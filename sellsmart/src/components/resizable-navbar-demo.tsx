@@ -17,15 +17,11 @@ export default function NavbarDemo() {
     const navItems = [
         {
             name: "Features",
-            link: "#features",
-        },
-        {
-            name: "Simulator",
-            link: "#simulator",
+            link: "features",
         },
         {
             name: "Metrics",
-            link: "#metrics",
+            link: "metrics",
         },
     ];
 
@@ -38,12 +34,6 @@ export default function NavbarDemo() {
                 <NavbarLogo />
                 <NavItems items={navItems} />
                 <div className="flex items-center gap-4">
-                    <NavbarButton
-                        variant="secondary"
-                        onClick={() => document.getElementById('metrics')?.scrollIntoView({ behavior: 'smooth' })}
-                    >
-                        Metrics
-                    </NavbarButton>
                     <NavbarButton
                         variant="primary"
                         onClick={() => document.getElementById('simulator')?.scrollIntoView({ behavior: 'smooth' })}

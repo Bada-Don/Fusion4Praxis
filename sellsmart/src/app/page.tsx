@@ -4,14 +4,32 @@ import NavbarDemo from "@/components/resizable-navbar-demo";
 import { Hero } from "@/components/ui/hero-1";
 import { Highlighter } from "@/components/ui/highlighter";
 import { TextReveal } from "@/components/ui/text-reveal";
-import { InfiniteSlider } from "@/components/ui/infinite-slider";
 import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 import { ScrollVelocityContainer, ScrollVelocityRow } from "@/components/ui/scroll-based-velocity";
-import { BackgroundGradient } from "@/components/ui/background-gradient";
-import Image from "next/image";
-import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid"; // Kept from previous step
-import { ShieldCheck, BarChart3, BrainCircuit } from "lucide-react";
-import { StickyScroll } from "@/components/ui/sticky-scroll-reveal"; // Kept from previous step
+import { ContainerScroll } from "@/components/ui/container-scroll-animation";
+import { SkewCards } from "@/components/ui/gradient-card-showcase";
+import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
+
+const featureCards = [
+  {
+    title: 'Monotonic Constraints',
+    desc: 'Price Up = Demand Down. We force the AI to respect basic economic laws, eliminating illogical predictions.',
+    gradientFrom: '#374151',
+    gradientTo: '#1f2937',
+  },
+  {
+    title: 'SEO Visibility',
+    desc: 'Quantify how description length dictates conversion rates. Optimize product listings for maximum impact.',
+    gradientFrom: '#475569',
+    gradientTo: '#334155',
+  },
+  {
+    title: 'Sentiment Analysis',
+    desc: 'Real-time brand health monitoring integrated into pricing logic. Adapt to market perception instantly.',
+    gradientFrom: '#52525b',
+    gradientTo: '#3f3f46',
+  },
+];
 
 function AboutSection() {
   return (
@@ -48,31 +66,9 @@ function AboutSection() {
         </TextReveal>
       </div>
 
-      {/* Bento Grid Feature Layer (Mixed in) */}
-      <div className="relative z-10 max-w-4xl mx-auto px-4 mt-20">
-        <BentoGrid>
-          <BentoGridItem
-            title="Monotonic Constraints"
-            description="Price Up = Demand Down. We force the AI to respect basic economic laws."
-            header={<div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-900 to-neutral-800" />}
-            icon={<ShieldCheck className="h-4 w-4 text-neutral-500" />}
-            className="md:col-span-1"
-          />
-          <BentoGridItem
-            title="SEO Visibility"
-            description="Quantify how description length dictates conversion rates."
-            header={<div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-900 to-neutral-800" />}
-            icon={<BarChart3 className="h-4 w-4 text-neutral-500" />}
-            className="md:col-span-1"
-          />
-          <BentoGridItem
-            title="Sentiment Analysis"
-            description="Real-time brand health monitoring integrated into pricing logic."
-            header={<div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-900 to-neutral-800" />}
-            icon={<BrainCircuit className="h-4 w-4 text-neutral-500" />}
-            className="md:col-span-1"
-          />
-        </BentoGrid>
+      {/* Skew Cards Feature Layer */}
+      <div className="relative z-10 mt-10">
+        <SkewCards cards={featureCards} />
       </div>
     </section>
   );
@@ -85,8 +81,12 @@ function ValidationMetrics() {
       description:
         "Our model achieves a Root Mean Squared Error of 1.81 on the validation set, outperforming standard linear regression baselines by 40%. This ensures that our demand forecasts are tight and reliable.",
       content: (
-        <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white text-4xl font-bold">
-          1.81 RMSE
+        <div className="h-full w-full relative overflow-hidden rounded-md">
+          <img 
+            src="https://media.istockphoto.com/id/1158762452/vector/team-business-goals-active-employees-social-media-marketing.jpg?s=612x612&w=0&k=20&c=snF7iP0bsaAxnarO73EX1-Cjdb8FwUiSocNW_YWpwY8=" 
+            alt="RMSE Accuracy"
+            className="w-full h-full object-cover"
+          />
         </div>
       ),
     },
@@ -95,8 +95,12 @@ function ValidationMetrics() {
       description:
         "Thanks to XGBoost's monotonic constraints, we have eliminated 'economic hallucinations'. The model never predicts that raising prices will magically increase demand for standard goods.",
       content: (
-        <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--orange-500),var(--yellow-500))] flex items-center justify-center text-white text-4xl font-bold">
-          0 Violations
+        <div className="h-full w-full relative overflow-hidden rounded-md">
+          <img 
+            src="https://img.freepik.com/premium-vector/financial-business-education-economics-study-finance-literacy-concept-books-economy-investment-knowledge-money-composition-flat-vector-illustration-isolated-white-background_198278-23758.jpg?semt=ais_hybrid&w=740&q=80" 
+            alt="Zero Logic Violations"
+            className="w-full h-full object-cover"
+          />
         </div>
       ),
     },
@@ -105,8 +109,12 @@ function ValidationMetrics() {
       description:
         "Residual analysis confirms that our error distribution is centered at zero, meaning the model is not systematically overestimating or underestimating demand across different categories.",
       content: (
-        <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--purple-500),var(--pink-500))] flex items-center justify-center text-white text-4xl font-bold">
-          Unbiased
+        <div className="h-full w-full relative overflow-hidden rounded-md">
+          <img 
+            src="https://pixelplex.io/wp-content/uploads/2023/11/ai-bias-examples-main.jpg" 
+            alt="Unbiased Estimator"
+            className="w-full h-full object-cover"
+          />
         </div>
       ),
     },
@@ -127,31 +135,29 @@ function ValidationMetrics() {
 
 function SimulatorSection() {
   return (
-    <div id="simulator" className="py-20 bg-neutral-950 min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
-      <div className="absolute inset-0 w-full h-full bg-black/50 z-0" />
-
-      <div className="text-center mb-10 max-w-2xl px-4 relative z-10">
-        <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-          Interactive <Highlighter color="#06b6d4" isView>Simulator</Highlighter>
-        </h2>
-        <p className="text-neutral-400">
-          Experience the power of constrained optimization. Adjust prices and see the
-          demand curve react in real-time.
-        </p>
-      </div>
-
-      <div className="w-full max-w-7xl px-4 h-[85vh] relative z-10">
-        <BackgroundGradient containerClassName="h-full w-full p-1" className="h-full w-full bg-neutral-900 rounded-[22px] overflow-hidden">
-          <iframe
-            src="https://ml-streamlit-1tma.onrender.com/?embed=true"
-            width="100%"
-            height="100%"
-            frameBorder="0"
-            className="w-full h-full rounded-[20px]"
-            title="Pricing Simulator"
-          />
-        </BackgroundGradient>
-      </div>
+    <div id="simulator" className="bg-neutral-950 relative overflow-hidden">
+      <ContainerScroll
+        titleComponent={
+          <>
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+              Interactive <Highlighter color="#06b6d4" isView>Simulator</Highlighter>
+            </h2>
+            <p className="text-neutral-400 max-w-2xl mx-auto">
+              Experience the power of constrained optimization. Adjust prices and see the
+              demand curve react in real-time.
+            </p>
+          </>
+        }
+      >
+        <iframe
+          src="https://ml-streamlit-1tma.onrender.com/?embed=true"
+          width="100%"
+          height="100%"
+          frameBorder="0"
+          className="w-full h-full rounded-2xl"
+          title="Pricing Simulator"
+        />
+      </ContainerScroll>
     </div>
   );
 }
@@ -167,7 +173,7 @@ export default function Home() {
       <Hero
         title={
           <>
-            Retail Pricing,{" "}
+            Retail Pricing,<br />{" "}
             <Highlighter action="highlight" color="#404040" isView>
               Anchored
             </Highlighter>{" "}
