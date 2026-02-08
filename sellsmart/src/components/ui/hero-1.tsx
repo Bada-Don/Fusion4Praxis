@@ -3,7 +3,7 @@
 import { ChevronRight, Download } from "lucide-react"
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient"
 import { SmokeEffect } from "@/components/ui/smoke-card"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 import type { ReactNode } from "react"
 
 interface HeroProps {
@@ -23,6 +23,15 @@ export function Hero({
     ctaHref = "#",
     onCtaClick
 }: HeroProps) {
+    const router = useRouter();
+
+    const handleCtaClick = () => {
+        if (onCtaClick) {
+            onCtaClick();
+        } else if (ctaHref) {
+            router.push(ctaHref);
+        }
+    };
     return (
         <section
             id="hero"
@@ -40,7 +49,7 @@ export function Hero({
             />
 
             {/* Hero Content - positioned above backgrounds, pointer-events pass through to smoke */}
-            <div className="relative z-20 pointer-events-none">
+            <div className="relative z-40 pointer-events-none">
                 {/* Eyebrow */}
                 {eyebrow && (
                     <a href="#" className="group inline-block pointer-events-auto">
@@ -69,17 +78,16 @@ export function Hero({
 
                 {/* CTA */}
                 {ctaLabel && (
-                    <div className="flex justify-center pointer-events-auto">
-                        <Link href={ctaHref}>
-                            <HoverBorderGradient
-                                containerClassName="rounded-full"
-                                as="div"
-                                className="bg-black text-white flex items-center space-x-3 px-8 py-4 text-lg cursor-pointer"
-                            >
-                                <Download className="h-5 w-5" />
-                                <span>{ctaLabel}</span>
-                            </HoverBorderGradient>
-                        </Link>
+                    <div className="flex justify-center pointer-events-auto relative z-50">
+                        <HoverBorderGradient
+                            containerClassName="rounded-full"
+                            as="button"
+                            className="bg-black text-white flex items-center space-x-3 px-8 py-4 text-lg cursor-pointer"
+                            onClick={handleCtaClick}
+                        >
+                            <Download className="h-5 w-5" />
+                            <span>{ctaLabel}</span>
+                        </HoverBorderGradient>
                     </div>
                 )}
             </div>
