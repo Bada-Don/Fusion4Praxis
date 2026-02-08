@@ -3,6 +3,7 @@
 import { ChevronRight, Download } from "lucide-react"
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient"
 import { SmokeEffect } from "@/components/ui/smoke-card"
+import Link from "next/link"
 import type { ReactNode } from "react"
 
 interface HeroProps {
@@ -69,15 +70,16 @@ export function Hero({
                 {/* CTA */}
                 {ctaLabel && (
                     <div className="flex justify-center pointer-events-auto">
-                        <HoverBorderGradient
-                            containerClassName="rounded-full"
-                            as="button"
-                            className="bg-black text-white flex items-center space-x-3 px-8 py-4 text-lg cursor-pointer"
-                            onClick={onCtaClick}
-                        >
-                            <Download className="h-5 w-5" />
-                            <span>{ctaLabel}</span>
-                        </HoverBorderGradient>
+                        <Link href={ctaHref}>
+                            <HoverBorderGradient
+                                containerClassName="rounded-full"
+                                as="div"
+                                className="bg-black text-white flex items-center space-x-3 px-8 py-4 text-lg cursor-pointer"
+                            >
+                                <Download className="h-5 w-5" />
+                                <span>{ctaLabel}</span>
+                            </HoverBorderGradient>
+                        </Link>
                     </div>
                 )}
             </div>

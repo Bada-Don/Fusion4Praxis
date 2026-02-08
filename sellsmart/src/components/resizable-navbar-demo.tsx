@@ -12,8 +12,10 @@ import {
     MobileNavMenu,
 } from "@/components/ui/resizable-navbar";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function NavbarDemo() {
+    const router = useRouter();
     const navItems = [
         {
             name: "Features",
@@ -36,7 +38,7 @@ export default function NavbarDemo() {
                 <div className="flex items-center gap-4">
                     <NavbarButton
                         variant="primary"
-                        onClick={() => document.getElementById('simulator')?.scrollIntoView({ behavior: 'smooth' })}
+                        onClick={() => router.push('/simulator')}
                     >
                         Try Simulator
                     </NavbarButton>
@@ -72,7 +74,7 @@ export default function NavbarDemo() {
                             variant="primary"
                             onClick={() => {
                                 setIsMobileMenuOpen(false);
-                                document.getElementById('simulator')?.scrollIntoView({ behavior: 'smooth' });
+                                router.push('/simulator');
                             }}
                         >
                             Try Simulator

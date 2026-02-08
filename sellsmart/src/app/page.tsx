@@ -6,7 +6,6 @@ import { Highlighter } from "@/components/ui/highlighter";
 import { TextReveal } from "@/components/ui/text-reveal";
 import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 import { ScrollVelocityContainer, ScrollVelocityRow } from "@/components/ui/scroll-based-velocity";
-import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import { SkewCards } from "@/components/ui/gradient-card-showcase";
 import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
 
@@ -132,41 +131,7 @@ function ValidationMetrics() {
   )
 }
 
-
-function SimulatorSection() {
-  return (
-    <div id="simulator" className="bg-neutral-950 relative overflow-hidden">
-      <ContainerScroll
-        titleComponent={
-          <>
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-              Interactive <Highlighter color="#06b6d4" isView>Simulator</Highlighter>
-            </h2>
-            <p className="text-neutral-400 max-w-2xl mx-auto">
-              Experience the power of constrained optimization. Adjust prices and see the
-              demand curve react in real-time.
-            </p>
-          </>
-        }
-      >
-        <iframe
-          src="https://ml-streamlit-1tma.onrender.com/?embed=true"
-          width="100%"
-          height="100%"
-          frameBorder="0"
-          className="w-full h-full rounded-2xl"
-          title="Pricing Simulator"
-        />
-      </ContainerScroll>
-    </div>
-  );
-}
-
 export default function Home() {
-  const scrollToSimulator = () => {
-    document.getElementById("simulator")?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <main className="relative min-h-screen bg-black">
       <NavbarDemo />
@@ -183,11 +148,10 @@ export default function Home() {
         subtitle="The first AI pricing engine with enforced Economic Guardrails. No hallucinations, just profit."
         eyebrow="AI-Powered Optimization"
         ctaLabel="Launch Simulator"
-        onCtaClick={scrollToSimulator}
+        ctaHref="/simulator"
       />
       <AboutSection />
       <ValidationMetrics />
-      <SimulatorSection />
     </main>
   );
 }
