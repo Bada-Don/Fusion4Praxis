@@ -3,9 +3,8 @@ import pandas as pd
 import numpy as np
 import xgboost as xgb
 import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
+import joblib
 from sklearn.preprocessing import LabelEncoder
-from textblob import TextBlob
 
 # --- UI Setup ---
 st.set_page_config(layout="wide", page_title="Pricing Simulator")
@@ -57,114 +56,26 @@ st.markdown("""
         }
     </style>
 """, unsafe_allow_html=True)
-# --- Phase 1: Data Loading and Feature Engineering ---
+
+# --- Phase 1: Load PRE-PROCESSED data (instant) ---
 @st.cache_data
 def load_and_prepare_data():
-    # Load data
-    df = pd.read_csv("data/Pricing_dataset.csv")
-    
-    # Cleaning Money Columns
-    def clean_currency(x):
-        if isinstance(x, str):
-            x = x.replace('₹', '').replace(',', '').strip()
-        return pd.to_numeric(x, errors='coerce')
-    
-    df['discounted_price'] = df['discounted_price'].apply(clean_currency)
-    df['actual_price'] = df['actual_price'].apply(clean_currency)
-    df['discount_percentage'] = df['discount_percentage'].astype(str).str.replace('%', '').astype(float)
-    
-    # Cleaning Rating/Demand Columns
-    df['rating_count'] = df['rating_count'].astype(str).str.replace(',', '').apply(pd.to_numeric, errors='coerce')
-    df['rating'] = pd.to_numeric(df['rating'], errors='coerce')
-    
-    # Drop nulls
-    df.dropna(subset=['discounted_price', 'actual_price', 'rating_count', 'rating'], inplace=True)
-    
-    # Category Hierarchy Processing
-    df['cat_split'] = df['category'].str.split('|')
-    df['main_category'] = df['cat_split'].apply(lambda x: x[0] if isinstance(x, list) else "Other")
-    df['sub_category'] = df['cat_split'].apply(lambda x: x[-1] if isinstance(x, list) else "Other")
-    df.drop('cat_split', axis=1, inplace=True)  # Drop to avoid caching issues
-    
-    # Visibility Metrics (Content Quality)
-    df['desc_len'] = df['about_product'].astype(str).apply(len)
-    df['name_len'] = df['product_name'].astype(str).apply(len)
-    
-    # Relative Pricing (Context)
-    df['category_avg_price'] = df.groupby('sub_category')['discounted_price'].transform('mean')
-    df['price_competitiveness'] = df['discounted_price'] / df['category_avg_price']
-    
-    # Sentiment Analysis
-    def get_sentiment(text):
-        if pd.isna(text):
-            return 0
-        return TextBlob(str(text)).sentiment.polarity
-    
-    df['review_sentiment'] = df['review_content'].apply(get_sentiment)
-    
-    # Target Transformation
-    df['log_demand'] = np.log1p(df['rating_count'])
-    
+    df = pd.read_csv("data/processed_data.csv")
     return df
 
-# --- Phase 2: Model Training (UPDATED WITH CONSTRAINTS) ---
+# --- Phase 2: Load PRE-TRAINED model (instant) ---
 @st.cache_resource
-def train_model(_df):
-    # Encode Categoricals
-    le = LabelEncoder()
-    _df['main_category_encoded'] = le.fit_transform(_df['main_category'])
-    
-    features = [
-        'discounted_price', 
-        'actual_price', 
-        'discount_percentage', 
-        'rating',
-        'desc_len',
-        'price_competitiveness',
-        'review_sentiment',
-        'main_category_encoded'
-    ]
-    
-    X = _df[features]
-    y = _df['log_demand']
-    
-    # Train/Test Split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
-    # --- HERE IS THE MAGIC FIX ---
-    # 1 = Increasing constraint (As feature goes up, prediction goes up)
-    # -1 = Decreasing constraint (As feature goes up, prediction goes down)
-    # 0 = No constraint
-    
-    # Map constraints to the feature list order:
-    # 'discounted_price': -1 (Price UP -> Demand DOWN)
-    # 'actual_price': 0 (Neutral)
-    # 'discount_percentage': 1 (Discount UP -> Demand UP)
-    # 'rating': 1 (Rating UP -> Demand UP)
-    # 'desc_len': 1 (Better Description -> Demand UP)
-    # 'price_competitiveness': -1 (More Expensive vs Peers -> Demand DOWN)
-    # 'review_sentiment': 1 (Better Sentiment -> Demand UP)
-    # 'main_category_encoded': 0 (Neutral)
-    
-    constraints = "(-1, 0, 1, 1, 1, -1, 1, 0)"
-    
-    model = xgb.XGBRegressor(
-        objective='reg:squarederror', 
-        n_estimators=500, 
-        learning_rate=0.05, 
-        max_depth=6,
-        monotone_constraints=constraints  # <--- FORCING ECONOMIC LOGIC
-    )
-    
-    model.fit(X_train, y_train)
-    
+def load_model():
+    model = xgb.XGBRegressor()
+    model.load_model("data/xgb_model.json")
+    le = joblib.load("data/label_encoder.joblib")
     return model, le
 
-# Load data and train model
+# Load data and model
 df = load_and_prepare_data()
-model, label_encoder = train_model(df)
+model, label_encoder = load_model()
 
-# Add encoded category to df (needed for product selection)
+# Add encoded category to df
 df['main_category_encoded'] = label_encoder.transform(df['main_category'])
 
 st.title("🛒 Dynamic Pricing & Demand Simulator")
